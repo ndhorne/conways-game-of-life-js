@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Conways's Game of Life programming exercise / coding challenge">
+  <meta name="author" content="Nicholas Horne">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Conway's Game of Life Programming Exercise / Coding Challenge</title>
+  
+  <link href="modalstyles.css" rel="stylesheet" type="text/css">
+  <link href="styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <div id="container">
+    <h1>Conway's Game of Life</h1>
+    <div id="main">
+      <div id="grid"></div>
+      
+      <div id="inputs">
+        <button id="auto" title="Start auto-generation">Start</button><br>
+        <button id="next" title="Step forward one generation">Next</button>
+        <button id="prev" title="Step back one generation">Back</button><br>
+        <input
+          type="range"
+          id="interval"
+          min="250"
+          max="1750"
+          value="1000"
+          step="250"
+          title="Auto-generation interval (lower is faster)"
+        ><br>
+        <button id="new" title="Start new game">New Game</button><br>
+        <button id="about" title="About Conway's Game of Life">About</button>
+      </div> <!-- #inputs -->
+    </div> <!-- #main -->
+  </div> <!-- #container -->
+  
+  <!-- New Game Modal -->
+  <div id="new-game-modal" class="modal">
+    
+    <!-- Modal content -->
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <span
+          id="close-new-game-modal"
+          class="close"
+          title="Close"
+        >&times;</span>
+        
+        <h2>New Game</h2>
+      </div> <!-- .modal-header -->
+      
+      <div class="modal-body">
+        <div id="custom-dimensions-div">
+          <label
+            class="dimension-label"
+            for="width"
+            title="Grid width"
+          >Width:</label>
+          <input
+            id="width-input"
+            class="dimension-input"
+            type="number"
+            title="Grid width"
+            min="1"
+          ><br>
+          <label
+            class="dimension-label"
+            for="height"
+            title="Grid height"
+          >Height:</label>
+          <input
+            id="height-input"
+            class="dimension-input"
+            type="number"
+            title="Grid height"
+            min="1"
+          >
+        </div><br> <!-- #custom-dimensions-div -->
+        
+        <div id="markers">
+          <label for="markers-select" title="Select glyphs">Glyphs:</label><br>
+          <select id="markers-select" title="Select glyphs">
+            <option title="Select squares">Squares</option>
+            <option title="Select flowers">Flowers</option>
+            <option title="Select microbes">Microbes</option>
+          </select><br>
+          <label
+            id="marker-size-input-label"
+            for="marker-size-input"
+            title="Glyph size"
+          >Size:</label>
+          <input
+            id="marker-size-input"
+            type="number"
+            title="Glyph size"
+            min="1"
+          >
+          <span id="marker-size-units">px</span>
+          
+          <div id="square-marker-colors">
+            <label
+              id="square-marker-color-label"
+              for="square-marker-color-select"
+              title="Square color"
+            >Color:</label><br>
+            <select id="square-marker-color-select" title="Select color">
+              <option title="Select black">&#x2B1B Black</option>
+              <option title="Select red">&#x1F7E5 Red</option>
+              <option title="Select blue">&#x1F7E6 Blue</option>
+              <option title="Select orange">&#x1F7E7 Orange</option>
+              <option title="Select yellow">&#x1F7E8 Yellow</option>
+              <option title="Select green">&#x1F7E9 Green</option>
+              <option title="Select purple">&#x1F7EA Purple</option>
+              <option title="Select brown">&#x1F7EB Brown</option>
+            </select>
+          </div> <!-- #square-marker-colors -->
+        </div><br> <!-- #markers -->
+        
+        <button id="start-new-game" title="Start new game">Begin</button>
+      </div> <!-- .modal-body -->
+    </div> <!-- .modal-content -->
+    
+    <div class="modal-footer"></div>
+  </div> <!-- #new-game-modal -->
+  
+  <!-- About Modal -->
+  <div id="about-modal" class="modal">
+    
+    <!-- Modal content -->
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <span id="close-about" class="close" title="Close">&times;</span>
+        
+        <h2>About</h2>
+      </div> <!-- .modal-header -->
+      
+      <div class="modal-body">
+        <p>Conway's Game of Life</p>
+        
+        <p>An implementation of Conway's Game of Life in JavaScript</p>
+        
+        <p>Per Conway's Game of Life any live cell with fewer than two or more than three live neighbors dies, any live cell with two or three live neighbors lives on to the next generation, and any dead cell with exactly three live neighbors becomes a live cell. A neighbor is defined as any adjacent cell, including diagonally adjacent ones. The state of any cell can be toggled at any time with the mouse primary button. Step through each generation with next and back or choose start and watch life find a way.</p>
+        
+        <p>By Nicholas D. Horne</p>
+        
+        <p>GNU GPLv3 licensed source code available at <a href="https://github.com/ndhorne/conways-game-of-life-js" target="_blank">https://github.com/ndhorne/conways-game-of-life-js</a></p>
+      </div> <!-- .modal-body -->
+      
+      <div class="modal-footer"></div>
+      
+    </div> <!-- .modal-content -->
+    
+  </div> <!-- #about-modal -->
+  
+  <!-- Error Modal -->
+  <div id="error-modal" class="modal">
+    
+    <!-- Modal content -->
+    <div id="error-modal-content" class="modal-content">
+      
+      <div class="modal-header">
+        <!-- <span id="closeAbout" class="close">&times;</span> -->
+        
+        <h2>Error</h2>
+      </div> <!-- .modal-header -->
+      
+      <div class="modal-body">
+        <p>You've done something I wasn't expecting you to do:</p>
+        
+        <pre id="error-message"></pre>
+      </div> <!-- .modal-body -->
+      
+      <div class="modal-footer"></div>
+      
+    </div> <!-- .modal-content -->
+    
+  </div> <!-- #error-modal -->
+  
+  <script src="conwaysgameoflife.js"></script>
+</body>
+</html>
