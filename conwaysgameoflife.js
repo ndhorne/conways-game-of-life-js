@@ -1,5 +1,5 @@
 /*
-Copyright 2019, 2023 Nicholas D. Horne
+Copyright 2019, 2023, 2024 Nicholas D. Horne
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,6 +37,80 @@ class Matrix {
     return this.content[y * this.width + x] = value;
   }
 }
+
+const markerGroups = {
+  blackSquares: {
+    live: String.fromCodePoint(0x2B1B),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  redSquares: {
+    live: String.fromCodePoint(0x1F7E5),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  blueSquares: {
+    live: String.fromCodePoint(0x1F7E6),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  orangeSquares: {
+    live: String.fromCodePoint(0x1F7E7),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  yellowSquares: {
+    live: String.fromCodePoint(0x1F7E8),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  greenSquares: {
+    live: String.fromCodePoint(0x1F7E9),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  purpleSquares: {
+    live: String.fromCodePoint(0x1F7EA),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  brownSquares: {
+    live: String.fromCodePoint(0x1F7EB),
+    dead: String.fromCodePoint(0x2B1C)
+  },
+  flowers: {
+    live: String.fromCodePoint(0x1F339),
+    dead: String.fromCodePoint(0x1F940)
+  },
+  microbes: {
+    live: String.fromCodePoint(0x1F9A0),
+    dead: String.fromCodePoint(0x1F480)
+  },
+};
+
+const container = document.getElementById("container");
+const gridElement = document.getElementById("grid");
+const autoGenerationButton = document.getElementById("auto");
+const nextGenerationButton = document.getElementById("next");
+const prevGenerationButton = document.getElementById("prev");
+const intervalRange = document.getElementById("interval");
+const markersSelect = document.getElementById("markers-select");
+const squareMarkerColors = document.getElementById("square-marker-colors");
+const squareMarkerColorSelect = (
+  document.getElementById("square-marker-color-select")
+);
+const newGameButton = document.getElementById("new");
+const startNewGameButton = document.getElementById("start-new-game");
+const aboutButton = document.getElementById("about");
+
+const widthInput = document.getElementById("width-input");
+const heightInput = document.getElementById("height-input");
+const markerSizeInput = document.getElementById("marker-size-input");
+
+const newGameModal = document.getElementById("new-game-modal");
+const closeNewGameModal = document.getElementById("close-new-game-modal");
+
+const aboutModal = document.getElementById("about-modal");
+const closeAboutModal = document.getElementById("close-about");
+
+const errorModal = document.getElementById("error-modal");
+const errorMessage = document.getElementById("error-message");
+
+let width = 30, height = 15;
+let grid, gridHistory, auto, intervalId, markers, markerSize, tableElement;
 
 function newGrid(width, height) {
   return new Matrix(width, height, (x, y) => Math.random() > .5 ? true : false);
@@ -156,6 +230,7 @@ function updateGeneration() {
   
   const nextGrid = nextGen(grid);
   
+  // if next grid matches current grid cease further generation
   if (nextGrid.content.every((status, i) => status === grid.content[i])) {
     if (auto) autoGenerationButton.click();
     
@@ -171,6 +246,12 @@ function startAutoGeneration() {
   );
 }
 
+function showErrorModal(e) {
+  console.error(e.message);
+  errorMessage.innerHTML = e.message;
+  errorModal.style.display = "block";
+}
+
 function startNewGame() {
   if (auto) autoGenerationButton.click();
   
@@ -180,8 +261,8 @@ function startNewGame() {
   nextGenerationButton.disabled = false;
   prevGenerationButton.disabled = true;
   
-  width = widthInput.value;
-  height = heightInput.value;
+  width = +widthInput.value;
+  height = +heightInput.value;
   markerSize = markerSizeInput.value;
   
   try {
@@ -196,6 +277,7 @@ function startNewGame() {
         break;
       default:
         throw new Error("Invalid markers group selected");
+      // end cases
     }
     
     if (markersSelect.selectedIndex === 0) {
@@ -226,12 +308,11 @@ function startNewGame() {
           break;
         default:
           throw new Error("Invalid square marker color selected");
+        // end cases
       }
     }
   } catch (e) {
-    console.error(e.message);
-    errorMessage.innerHTML = e.message;
-    errorModal.style.display = "block";
+    showErrorModal(e);
     return;
   }
   
@@ -242,83 +323,6 @@ function startNewGame() {
   
   newGameModal.style.display = "none";
 }
-
-const markerGroups = {
-  flowers: {
-    live: String.fromCodePoint(0x1F339),
-    dead: String.fromCodePoint(0x1F940)
-  },
-  microbes: {
-    live: String.fromCodePoint(0x1F9A0),
-    dead: String.fromCodePoint(0x1F480)
-  },
-  redSquares: {
-    live: String.fromCodePoint(0x1F7E5),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-  blueSquares: {
-    live: String.fromCodePoint(0x1F7E6),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-  orangeSquares: {
-    live: String.fromCodePoint(0x1F7E7),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-  yellowSquares: {
-    live: String.fromCodePoint(0x1F7E8),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-  greenSquares: {
-    live: String.fromCodePoint(0x1F7E9),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-  purpleSquares: {
-    live: String.fromCodePoint(0x1F7EA),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-  brownSquares: {
-    live: String.fromCodePoint(0x1F7EB),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-  blackSquares: {
-    live: String.fromCodePoint(0x2B1B),
-    dead: String.fromCodePoint(0x2B1C)
-  },
-};
-
-let markers = markerGroups["blackSquares"];
-
-let width = 30, height = 15;
-let grid = newGrid(width, height), gridHistory = [];
-let tableElement, auto, intervalId, markerSize;
-
-const container = document.getElementById("container");
-const gridElement = document.getElementById("grid");
-const autoGenerationButton = document.getElementById("auto");
-const nextGenerationButton = document.getElementById("next");
-const prevGenerationButton = document.getElementById("prev");
-const intervalRange = document.getElementById("interval");
-const markersSelect = document.getElementById("markers-select");
-const squareMarkerColors = document.getElementById("square-marker-colors");
-const squareMarkerColorSelect = (
-  document.getElementById("square-marker-color-select")
-);
-const newGameButton = document.getElementById("new");
-const startNewGameButton = document.getElementById("start-new-game");
-const aboutButton = document.getElementById("about");
-
-const widthInput = document.getElementById("width-input");
-const heightInput = document.getElementById("height-input");
-const markerSizeInput = document.getElementById("marker-size-input");
-
-const newGameModal = document.getElementById("new-game-modal");
-const closeNewGameModal = document.getElementById("close-new-game-modal");
-
-const aboutModal = document.getElementById("about-modal");
-const closeAboutModal = document.getElementById("close-about");
-
-const errorModal = document.getElementById("error-modal");
-const errorMessage = document.getElementById("error-message");
 
 autoGenerationButton.addEventListener("click", () => {
   if (!auto) {
@@ -398,17 +402,63 @@ markersSelect.addEventListener("input", () => {
   }
 }, false);
 
-if (parseInt(getComputedStyle(container).width) < 1140) {
-  markerSize = Math.floor(parseInt(getComputedStyle(container).width) / 57);
+squareMarkerColorSelect.addEventListener("input", () => {
+  try {
+    switch(squareMarkerColorSelect.selectedIndex) {
+      case 0:
+        markersSelect[0].innerHTML = "&#x2B1B";
+        break;
+      case 1:
+        markersSelect[0].innerHTML = "&#x1F7E5";
+        break;
+      case 2:
+        markersSelect[0].innerHTML = "&#x1F7E6";
+        break;
+      case 3:
+        markersSelect[0].innerHTML = "&#x1F7E7";
+        break;
+      case 4:
+        markersSelect[0].innerHTML = "&#x1F7E8";
+        break;
+      case 5:
+        markersSelect[0].innerHTML = "&#x1F7E9";
+        break;
+      case 6:
+        markersSelect[0].innerHTML = "&#x1F7EA";
+        break;
+      case 7:
+        markersSelect[0].innerHTML = "&#x1F7EB";
+        break;
+      default:
+        throw new Error("Invalid square marker color selected (input event)");
+      // end cases
+    }
+    
+    markersSelect[0].innerHTML += " Squares";
+  } catch (e) {
+    showErrorModal(e);
+    return;
+  }
+}, false);
+
+// game doesn't play well on a small grid, decrease glyph size instead
+if (parseFloat(getComputedStyle(container).width) < 1140) {
+  markerSize = Math.floor(parseFloat(getComputedStyle(container).width) / 57);
   gridElement.style.fontSize = markerSize + "px";
+  
+  // minimum font size fix (for android chrome via facebook messenger)
+  if (markerSize < parseFloat(getComputedStyle(gridElement).fontSize)) {
+    let i = parseFloat(getComputedStyle(gridElement).fontSize) - markerSize;
+    
+    for (; i > 0; i--) width--;
+  }
 }
 
 widthInput.value = width;
 heightInput.value = height;
 intervalRange.value = 1000;
-markerSizeInput.value = parseInt(getComputedStyle(gridElement).fontSize);
+markerSizeInput.value = parseFloat(getComputedStyle(gridElement).fontSize);
 markersSelect.selectedIndex = 0;
 squareMarkerColorSelect.selectedIndex = 0;
-prevGenerationButton.disabled = true;
 
-updateTable();
+startNewGame();
