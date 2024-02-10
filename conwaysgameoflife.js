@@ -263,11 +263,40 @@ function startNewGame() {
   
   width = +widthInput.value;
   height = +heightInput.value;
-  markerSize = markerSizeInput.value;
+  markerSize = +markerSizeInput.value;
   
   try {
     switch(markersSelect.selectedIndex) {
       case 0:
+        switch(squareMarkerColorSelect.selectedIndex) {
+          case 0:
+            markers = markerGroups["blackSquares"];
+            break;
+          case 1:
+            markers = markerGroups["redSquares"];
+            break;
+          case 2:
+            markers = markerGroups["blueSquares"];
+            break;
+          case 3:
+            markers = markerGroups["orangeSquares"];
+            break;
+          case 4:
+            markers = markerGroups["yellowSquares"];
+            break;
+          case 5:
+            markers = markerGroups["greenSquares"];
+            break;
+          case 6:
+            markers = markerGroups["purpleSquares"];
+            break;
+          case 7:
+            markers = markerGroups["brownSquares"];
+            break;
+          default:
+            throw new Error("Invalid square marker color selected");
+          // end cases
+        }
         break;
       case 1:
         markers = markerGroups["flowers"];
@@ -278,38 +307,6 @@ function startNewGame() {
       default:
         throw new Error("Invalid markers group selected");
       // end cases
-    }
-    
-    if (markersSelect.selectedIndex === 0) {
-      switch(squareMarkerColorSelect.selectedIndex) {
-        case 0:
-          markers = markerGroups["blackSquares"];
-          break;
-        case 1:
-          markers = markerGroups["redSquares"];
-          break;
-        case 2:
-          markers = markerGroups["blueSquares"];
-          break;
-        case 3:
-          markers = markerGroups["orangeSquares"];
-          break;
-        case 4:
-          markers = markerGroups["yellowSquares"];
-          break;
-        case 5:
-          markers = markerGroups["greenSquares"];
-          break;
-        case 6:
-          markers = markerGroups["purpleSquares"];
-          break;
-        case 7:
-          markers = markerGroups["brownSquares"];
-          break;
-        default:
-          throw new Error("Invalid square marker color selected");
-        // end cases
-      }
     }
   } catch (e) {
     showErrorModal(e);
